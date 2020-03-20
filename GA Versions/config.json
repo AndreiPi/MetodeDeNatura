@@ -1,0 +1,14 @@
+{
+  "GA": {
+    "pop_size": 50,
+    "generations": 300,
+    "crossover_probability": 0.8,
+    "mutation_probability": 0.2,
+    "elitism": true,
+    "top_limit": 20,
+    "maximise_fitness": false
+  },
+  "ANN": {
+
+  }
+}
