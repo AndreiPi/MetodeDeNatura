@@ -9,6 +9,8 @@
     "maximise_fitness": false
   },
   "ANN": {
-
+    "Dense1": [16, "relu"],
+    "Dense2": [32, "relu"],
+    "Dense3": [64, "relu"]
   }
 }
