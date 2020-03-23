@@ -1,23 +1,27 @@
-import deap
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Dense, Conv1D, MaxPooling1D, Softmax, Add, Flatten, Activation# , Dropout
 from keras import backend as K
 from tensorflow.keras.optimizers import Adam
-from keras.utils import to_categorical
+from tensorflow.keras.utils import to_categorical, plot_model
+import graphviz
 from tensorflow.keras.callbacks import LearningRateScheduler, ModelCheckpoint
 import numpy as np
 import pickle as pkl
 
 
 
-X_train,target_test = pkl.load(open("train_data.pkl","rb"))
-y_train = to_categorical(target_test)
+X_train,y_train,x_test,y_test = pkl.load(open("train_data4096.pkl","rb"))
+y_train = to_categorical(y_train)
+y_test = to_categorical(y_test)
+
+X_train = X_train[:,:,np.newaxis]
+x_test = x_test[:,:,np.newaxis]
 n_obs,feature,depth = X_train.shape
 batch_size = 500
 print(n_obs,feature,depth)
 K.clear_session()
 
-inp = Input(shape=(feature, depth))
+inp = Input(shape=(feature,depth))
 C = Conv1D(filters=32, kernel_size=5, strides=1)(inp)
 
 C11 = Conv1D(filters=32, kernel_size=5, strides=1, padding='same')(C)
@@ -73,12 +77,9 @@ model = Model(inputs=inp, outputs=A7)
 adam = Adam(lr = 0.001, beta_1 = 0.9, beta_2 = 0.999)
 model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=['accuracy'])
 
-
-
-
 history = model.fit(X_train, y_train,
-                    epochs=80,
+                    epochs=35,
                     batch_size=batch_size,
                     verbose=2,)
 
-y_pred = model.predict(X_train, batch_size=1000)
+score,acc = model.evaluate(x_test,y_test, batch_size=batch_size)
